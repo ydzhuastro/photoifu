@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nircam-photometric-ifu"
+version = "0.1.0"
+description = "Lightweight public analysis layer for NIRCam photometric-IFU style resolved SED maps."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+  { name = "Yongda Zhu" }
+]
+dependencies = [
+  "numpy",
+  "pandas",
+  "matplotlib",
+  "scikit-learn",
+  "PyYAML",
+]
+
+[project.optional-dependencies]
+stats = ["scipy"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

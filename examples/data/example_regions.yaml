@@ -1,0 +1,38 @@
+regions:
+  A1:
+    shape: box
+    xmin: 31
+    xmax: 44
+    ymin: 31
+    ymax: 43
+    class: A
+  A2:
+    shape: box
+    xmin: 36
+    xmax: 51
+    ymin: 22
+    ymax: 32
+    class: A
+  B:
+    shape: box
+    xmin: 13
+    xmax: 24
+    ymin: 34
+    ymax: 47
+    class: B
+  C:
+    shape: box
+    xmin: 24
+    xmax: 35
+    ymin: 19
+    ymax: 29
+    class: C
+exclude_regions: {}
+region_classes:
+  A:
+    - A1
+    - A2
+  B:
+    - B
+  C:
+    - C

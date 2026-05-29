@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this workflow, please cite the associated Zhu et al. paper when available."
+title: "nircam-photometric-ifu"
+authors:
+  - family-names: "Zhu"
+    given-names: "Yongda"
+version: "0.1.0"
+date-released: "2026-05-28"
+license: "MIT"
