@@ -107,6 +107,22 @@ def plot_resolved_maps(
     return output_path
 
 
+def plot_sed_maps(
+    pixel_table: pd.DataFrame,
+    property_maps: Mapping[str, np.ndarray],
+    output_path: str | Path,
+    image_shape: tuple[int, int] | None = None,
+) -> Path:
+    """Alias for ``plot_resolved_maps`` used by the public API."""
+
+    return plot_resolved_maps(
+        pixel_table,
+        property_maps,
+        output_path,
+        image_shape=image_shape,
+    )
+
+
 def plot_gmm_pca(
     pixel_table: pd.DataFrame,
     cluster_table: pd.DataFrame,

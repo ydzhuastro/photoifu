@@ -1,55 +1,86 @@
-# nircam-photometric-ifu
+# PhotoIFU
 
-Lightweight public example code for the workflow behind "NIRCam as a Photometric Integral Field Unit: Resolved Imprints of Galactic Feedback." Given PSF-matched NIRCam photometry and per-pixel SED outputs, the code reconstructs resolved maps, identifies physical pixel populations with GMM/PCA, and compares feedback-associated apertures with the full host distribution.
+Public example code for the workflow behind *PhotoIFU: NIRCam as a Photometric Integral Field Unit for Mapping Feedback in Galaxies*.
 
-## What This Repo Does
+`photoifu` treats PSF-matched multi-band imaging as a low-resolution photometric integral field unit. Each spatial pixel has a coarse SED. The package provides tools to create or load pixel-level photometry tables, run a lightweight public SED-fitting example, reconstruct resolved physical-property maps, identify pixel populations with GMM/PCA, and compare gas-selected apertures with the full fitted host distribution.
 
-- Loads a pixel photometry table and a per-pixel SED output table.
-- Reconstructs 2D maps of stellar mass, sSFR, dust, metallicity, and recent-SFH proxy values.
-- Runs robust-scaled PCA and Gaussian-mixture clustering in physical-property space.
-- Applies simple manual box or circle regions.
-- Compares representative feedback/channel apertures against all valid fitted host pixels.
-- Makes compact Matplotlib figures and CSV summaries.
+## What this repo does
 
-## What It Does Not Do
+`photoifu` is organized around three steps:
 
-This is not a complete SED-fitting pipeline. It does not run Prospector, Parrot, Nautilus, FSPS, or any private production fitting machinery. It starts from tables that you have already produced.
+1. **Create pixel data products**  
+   Build a pixel-level photometry table from PSF-matched imaging, or load an existing table.
+2. **Fit pixel SEDs**  
+   Run a lightweight public FSPS-based SED-fitting example that writes an `all_params`-style table. This public fitter is intended for demonstration and reproducibility of the workflow structure, not as the private production pipeline used in the paper.
+3. **Analyze resolved SED outputs**  
+   Reconstruct maps, run robust-scaled PCA and Gaussian-mixture clustering in physical-property space, apply manual regions, and compare selected apertures with all valid fitted host pixels.
 
-A public version of the full SED-fitting pipeline will be released in a future version of this repo.
+## What this repo does not include
+
+This repo does not include the private production fitting machinery used for the paper. It does not include private JADES mosaics or unpublished full-resolution image products.
+
+The public SED fitter included here is a lightweight reference implementation. A faster production implementation is planned for a later release. If you would like to apply the full workflow before then, please contact the maintainer; I am happy to discuss running the code or helping set up a comparable workflow.
+
+Emission-line maps require per-pixel best-fit spectra and are not produced by the default cached-table example.
 
 ## Installation
-
-From this directory:
 
 ```bash
 python -m pip install -e .
 ```
 
-The example can also run directly from the source tree without installation:
+For analysis-only use, the core dependencies are NumPy, pandas, scikit-learn, matplotlib, and PyYAML. SciPy is optional and enables Mann-Whitney p-values in the region summaries.
+
+The SED-fitting demo may require optional FSPS dependencies:
 
 ```bash
-cd nircam-photometric-ifu
-python examples/run_example.py
+python -m pip install -e ".[sed]"
 ```
 
-## Expected Inputs
+## Quickstart: analysis-only demo
 
-### Pixel Photometry Table
+```bash
+python examples/run_analysis_only.py
+```
 
-CSV columns:
+This uses the included compact 206183 example tables and writes:
+
+- `examples/outputs/206183_sed_maps.png`
+- `examples/outputs/206183_gmm_pca.png`
+- `examples/outputs/206183_region_comparisons.png`
+- `examples/outputs/206183_cluster_pixels.csv`
+- `examples/outputs/206183_region_summary.csv`
+
+## End-to-end demo
+
+```bash
+python examples/run_end_to_end_206183.py
+```
+
+This demonstrates the full public workflow from pixel photometry to SED-fitting output and analysis products. The public fitter runs on a small representative subset by default. If FSPS is unavailable, the script falls back to the cached `examples/data/all_params_206183.csv` table and continues with the analysis-only part.
+
+When the SED-fitting step runs, it also writes:
+
+- `examples/outputs/206183_all_params_public_fit.csv`
+
+## Expected inputs
+
+### Pixel photometry table
+
+CSV columns include:
 
 - `ID`
 - `x`, `y`
 - `pixel_index`
-- `F090W`, `F115W`, `F150W`, `F200W`, `F277W`, `F356W`, `F444W`
-- matching uncertainty columns such as `e_F090W`, `e_F115W`, etc.
+- NIRCam flux columns, e.g. `F090W`, `F115W`, `F150W`, `F200W`, `F277W`, `F356W`, `F444W`
+- matching uncertainty columns such as `e_F090W`
 - `keep_pixel`
 
-Coordinates are zero-indexed pixel coordinates. The photometry should already be PSF-matched and placed on a common grid.
+The photometry should already be PSF matched and placed on a common grid.
 
-### Per-Pixel SED Output Table
+### Per-pixel SED output table
 
-CSV columns:
+CSV columns include:
 
 - `ID`
 - `x`, `y`
@@ -60,15 +91,15 @@ CSV columns:
 - `gas_logz`
 - `logSFRratio0`
 
-If `log_ssfr` is absent, the code can compute it from `logSFR - logmass` only when both columns are present.
+If `log_ssfr` is absent, `photoifu` can compute it from `logSFR - logmass` when both columns are present.
 
 ### Region YAML
 
-Manual regions can be boxes or circles. The example uses box apertures:
+Manual regions can be boxes or circles:
 
 ```yaml
 regions:
-  A1:
+  A:
     shape: box
     xmin: 31
     xmax: 44
@@ -77,27 +108,36 @@ regions:
     class: A
 ```
 
-Manual regions are representative apertures. The global comparison sample is not the union of these boxes; it is all valid fitted host pixels after any target-level exclusions.
+The global comparison sample is not the union of the manual regions. It is all valid fitted host pixels after any target-level exclusions.
 
-## Example Data
+## Example data
 
-The files in `examples/data/` are synthetic and small. They mimic a 60 x 60 NIRCam cutout with a masked host galaxy, a lower-dust channel-like feature, a recent-SFH-enhanced region, and a mild metallicity gradient. They are for demonstrating the workflow only and are not unpublished science data.
+The included 206183 example data are compact CSV-level products intended to demonstrate the public workflow. They do not include private mosaics. They are sufficient to run the analysis and, where optional dependencies are available, the lightweight public SED-fitting demo.
 
-Running the example writes:
+Included files:
 
-- `outputs/example_sed_maps.png`
-- `outputs/example_gmm_pca.png`
-- `outputs/example_region_comparisons.png`
-- `outputs/example_cluster_pixels.csv`
-- `outputs/example_region_summary.csv`
+- `examples/data/cut_image_206183.csv`
+- `examples/data/all_params_206183.csv`
+- `examples/data/regions_206183.yaml`
 
-## Clustering Design
+## Public API
 
-The GMM/PCA step deliberately excludes spatial information. The clustering features are SED-derived quantities such as `logmass`, `log_ssfr`, `dust2`, `gas_logz`, and `logSFRratio0`. Pixel coordinates are used later only to reconstruct maps and relate clusters back to the image.
+```python
+from photoifu.io import load_pixel_table, load_sed_table
+from photoifu.cube import infer_grid, load_pixel_photometry, table_to_map
+from photoifu.sed import fit_sed_table
+from photoifu.analysis import build_property_maps, run_gmm_pca, compare_regions
+from photoifu.plotting import plot_sed_maps, plot_gmm_pca, plot_region_comparisons
+from photoifu.regions import load_regions, assign_region_labels
+```
+
+## Clustering design
+
+The GMM/PCA step deliberately excludes spatial information. The clustering features are SED-derived quantities such as `logmass`, `log_ssfr`, `dust2`, `gas_logz`, and `logSFRratio0`. Pixel coordinates are used only to reconstruct maps and relate clusters or manual regions back to the image.
 
 ## Citation
 
-If you use this workflow, please cite Zhu et al. in prep / submitted once available.
+If you use this workflow, please cite Zhu et al. submitted / in preparation until the final citation is available.
 
 ## License
 

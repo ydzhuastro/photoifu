@@ -8,7 +8,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from .io import validate_geometry
+from .io import load_region_config, validate_geometry
 
 
 def build_box_mask(
@@ -115,6 +115,21 @@ def assign_regions_to_pixels(
 
     output["region"] = labels
     return output
+
+
+def load_regions(path):
+    """Load a region YAML file."""
+
+    return load_region_config(path)
+
+
+def assign_region_labels(
+    table: pd.DataFrame,
+    region_masks: Mapping[str, np.ndarray],
+) -> pd.DataFrame:
+    """Alias for ``assign_regions_to_pixels`` used by the public API."""
+
+    return assign_regions_to_pixels(table, region_masks)
 
 
 def _coerce_exclude_masks(exclude_masks: Any) -> Iterable[np.ndarray]:

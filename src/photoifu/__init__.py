@@ -1,6 +1,8 @@
-"""Public analysis helpers for NIRCam photometric-IFU style maps."""
+"""Public PhotoIFU helpers for pixel SED maps and region analysis."""
 
+from .analysis import compare_regions
 from .clustering import build_feature_matrix, run_gmm_pca
+from .cube import infer_grid, load_pixel_photometry, table_to_map
 from .io import load_pixel_table, load_region_config, load_sed_table, validate_geometry
 from .maps import (
     build_property_maps,
@@ -28,14 +30,18 @@ __all__ = [
     "build_global_mask",
     "build_property_maps",
     "build_region_masks",
+    "compare_regions",
     "compare_region_to_global",
     "fill_isolated_nan_pixels",
+    "infer_grid",
     "infer_image_shape",
+    "load_pixel_photometry",
     "load_pixel_table",
     "load_region_config",
     "load_sed_table",
     "reconstruct_map",
     "run_gmm_pca",
     "summarize_regions",
+    "table_to_map",
     "validate_geometry",
 ]

@@ -8,3 +8,16 @@ build/
 dist/
 outputs/*
 !outputs/.gitkeep
+examples/outputs/*
+!examples/outputs/.gitkeep
+*.fits
+*.fits.gz
+*.asdf
+*.h5
+*.npy
+*.npz
+paper_data/
+manuscript/
+private_outputs/
+production_outputs/
+fast_*SED*.py
