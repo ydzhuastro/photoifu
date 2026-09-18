@@ -13,9 +13,9 @@
 3. **Analyze resolved SED outputs**  
    Reconstruct maps, run robust-scaled PCA and Gaussian-mixture clustering in physical-property space, apply manual regions, and compare selected apertures with all valid fitted host pixels.
 
-## What this repo does not include
+## What this repo does not include yet
 
-This repo does not include the private production fitting machinery used for the paper. It does not include private JADES mosaics or unpublished full-resolution image products.
+This repo does not include the production fitting machinery.
 
 The public SED fitter included here is a lightweight reference implementation. A faster production implementation is planned for a later release. If you would like to apply the full workflow before then, please contact the maintainer; I am happy to discuss running the code or helping set up a comparable workflow.
 
