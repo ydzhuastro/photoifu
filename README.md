@@ -1,7 +1,5 @@
 # PhotoIFU
 
-Public example code for the workflow behind *PhotoIFU: NIRCam as a Photometric Integral Field Unit for Mapping Feedback in Galaxies*.
-
 `photoifu` treats PSF-matched multi-band imaging as a low-resolution photometric integral field unit. Each spatial pixel has a coarse SED. The package provides tools to create or load pixel-level photometry tables, run a lightweight public SED-fitting example, reconstruct resolved physical-property maps, identify pixel populations with GMM/PCA, and compare gas-selected apertures with the full fitted host distribution.
 
 ## What this repo does
